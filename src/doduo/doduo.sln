@@ -1,0 +1,65 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27004.2009
+MinimumVisualStudioVersion = 15.0.26124.0
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet.doduo", "dotnet.doduo\dotnet.doduo.csproj", "{50719B94-294C-4078-A308-E89C13A2EE9A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "dotnet.doduo.example", "dotnet.doduo.example\dotnet.doduo.example.csproj", "{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}"
+EndProject
+Project("{E53339B2-1760-4266-BCC7-CA923CBCF16C}") = "docker-compose", "docker-compose.dcproj", "{9B16876F-0237-4363-984A-9303D32CDC70}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|Any CPU = Release|Any CPU
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Debug|x64.Build.0 = Debug|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Debug|x86.Build.0 = Debug|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Release|x64.ActiveCfg = Release|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Release|x64.Build.0 = Release|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Release|x86.ActiveCfg = Release|Any CPU
+		{50719B94-294C-4078-A308-E89C13A2EE9A}.Release|x86.Build.0 = Release|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Debug|x64.Build.0 = Debug|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Debug|x86.Build.0 = Debug|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Release|x64.ActiveCfg = Release|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Release|x64.Build.0 = Release|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Release|x86.ActiveCfg = Release|Any CPU
+		{9BC96C9B-43A1-477F-A9E2-C595EBCEC217}.Release|x86.Build.0 = Release|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Debug|x64.Build.0 = Debug|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Debug|x86.Build.0 = Debug|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Release|x64.ActiveCfg = Release|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Release|x64.Build.0 = Release|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Release|x86.ActiveCfg = Release|Any CPU
+		{9B16876F-0237-4363-984A-9303D32CDC70}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2CA738B9-729C-4FFA-B449-F0454A658327}
+	EndGlobalSection
+EndGlobal

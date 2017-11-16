@@ -1,0 +1,8 @@
+version: '3'
+
+services:
+  dotnet.doduo.example:
+    image: dotnet.doduo.example
+    build:
+      context: ./dotnet.doduo.example
+      dockerfile: Dockerfile
