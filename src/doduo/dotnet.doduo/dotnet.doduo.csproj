@@ -6,4 +6,12 @@
     <RootNamespace>dotnet.doduo</RootNamespace>
   </PropertyGroup>
 
+  <ItemGroup>
+    <Folder Include="MessageBroker\Contract\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
+  </ItemGroup>
+
 </Project>
