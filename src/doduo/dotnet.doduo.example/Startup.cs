@@ -42,7 +42,6 @@ namespace dotnet.doduo.example
 
             routeBuilder.MapGet("api/values/{id}", context =>
             {
-
                 return context.Response.WriteAsync("value");
             });
 
