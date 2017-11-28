@@ -28,6 +28,10 @@ namespace dotnet.doduo.example
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddRouting();
+            services.AddDoduo(x =>
+            {
+                x.UseRabbitMQ();
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
