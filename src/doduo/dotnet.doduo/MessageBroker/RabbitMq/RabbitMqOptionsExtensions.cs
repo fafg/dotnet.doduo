@@ -10,7 +10,7 @@ namespace dotnet.doduo
     {
         public static DoduoConfiguration UseRabbitMQ(this DoduoConfiguration configuration)
         {
-           return configuration.UseRabbitMQ(opt => opt = RabbitMqOptions.New());
+           return configuration.UseRabbitMQ(opt => opt = RabbitMqOptions.Default());
         }
         public static DoduoConfiguration UseRabbitMQ(this DoduoConfiguration configuration, Action<RabbitMqOptions> configure)
         {
