@@ -15,5 +15,16 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         public int ReadTimeout { get; set; } = RabbitMqConstants.DEFAULT_CONNECTION_TIMEOUT;
         public int WriteTimeout { get; set; } = RabbitMqConstants.DEFAULT_CONNECTION_TIMEOUT;
 
+
+        public static RabbitMqOptions New()
+        {
+            return _instanceDefaultStatic;
+        }
+
+        private static RabbitMqOptions _instanceDefaultStatic = new RabbitMqOptions
+        {
+            Host = "localhost"
+        };
+
     }
 }
