@@ -51,6 +51,7 @@ namespace dotnet.doduo.example
 
             IRouter routes = routeBuilder.Build();
             app.UseRouter(routes);
+            app.UseDoduo();
         }
     }
 }
