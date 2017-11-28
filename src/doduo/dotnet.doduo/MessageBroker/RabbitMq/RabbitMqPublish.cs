@@ -15,35 +15,15 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         {
             _connection = connection;
         }
-        public void Publish<T>(string name, T obj) where T : class
-        {
-            _connection.Rent().ProduceAsync(name, null);
-            throw new NotImplementedException();
-        }
-
-        public void Publish(string name, IComparable value)
-        {
-            throw new NotImplementedException();
-        }
 
         public Task PublishAsync<T>(string name, T obj) where T : class
         {
-            throw new NotImplementedException();
+          return  _connection.Rent().ProduceAsync(name, null);            
         }
 
         public Task PublishAsync(string name, IComparable value)
         {
-            throw new NotImplementedException();
-        }
-
-        public void PublishcOneWayAsyn(string name, IComparable value)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void PublishOneWayAsyn<T>(string name, T obj) where T : class
-        {
-            throw new NotImplementedException();
+            return _connection.Rent().ProduceAsync(name, null);
         }
     }
 }

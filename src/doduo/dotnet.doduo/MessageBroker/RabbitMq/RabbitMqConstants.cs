@@ -4,11 +4,11 @@ using System.Text;
 
 namespace dotnet.doduo.MessageBroker.RabbitMq
 {
-    public class RabbitMqConstants
+    public static class RabbitMqConstants
     {
         public const string DEFAULT_VIRTUAL_HOST = "/";
-        public const string DEFAULT_USER = "gest";
-        public const string DEFAULT_PASSWORD = "gest";
+        public const string DEFAULT_USER = "guest";
+        public const string DEFAULT_PASSWORD = "guest";
         public const int DEFAULT_CONNECTION_TIMEOUT = 30 * 1000;
         public const int DEFAULT_PORT = 5672;
         public const string EXCHANGE_TYPE = "topic";

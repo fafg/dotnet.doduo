@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using dotnet.doduo.MessageBroker.Model;
 using RabbitMQ.Client;
+using System.Threading.Tasks;
 
 namespace dotnet.doduo.MessageBroker.RabbitMq
 {
@@ -17,7 +18,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
             _options = options;
         }
 
-        public ProducerResponse ProduceAsync(string topic, byte[] body)
+        public Task<ProducerResponse> ProduceAsync(string topic, byte[] body)
         {
             try
             {
@@ -27,13 +28,12 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
                         null,
                         body);
 
-                return ProducerResponse.Ok();
+                return Task.FromResult(ProducerResponse.Ok());
             }
             catch (Exception ex)
             {
-                return ProducerResponse.Error(ex);
+                return Task.FromResult(ProducerResponse.Error(ex));
             }
-
         }
 
         public void Dispose()

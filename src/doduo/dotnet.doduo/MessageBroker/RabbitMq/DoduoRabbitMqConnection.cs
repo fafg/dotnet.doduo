@@ -57,7 +57,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         }
 
         public IDoduoProducer Rent()
-        {
+        {       
             var model = GetConnection().CreateModel();
             return new RabbitMqDoduoProducer(model, _options);
         }
