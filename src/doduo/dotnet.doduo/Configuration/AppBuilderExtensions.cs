@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace dotnet.doduo.Configuration
+namespace Microsoft.AspNetCore.Builder
 {
     public static class AppBuilderExtensions
     {
