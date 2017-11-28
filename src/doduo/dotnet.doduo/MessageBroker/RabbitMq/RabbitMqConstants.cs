@@ -11,5 +11,6 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         public const string DEFAULT_PASSWORD = "gest";
         public const int DEFAULT_CONNECTION_TIMEOUT = 30 * 1000;
         public const int DEFAULT_PORT = 5672;
+        public const string EXCHANGE_TYPE = "topic";
     }
 }
