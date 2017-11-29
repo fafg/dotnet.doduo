@@ -7,14 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="MessageBroker\Contract\" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="RabbitMQ.Client" Version="5.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.Routing" Version="2.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="2.0.0" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="2.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\..\..\..\..\..\Program Files\dotnet\sdk\NuGetFallbackFolder\newtonsoft.json\10.0.1\lib\netstandard1.3\Newtonsoft.Json.dll</HintPath>
+    </Reference>
   </ItemGroup>
 
 </Project>

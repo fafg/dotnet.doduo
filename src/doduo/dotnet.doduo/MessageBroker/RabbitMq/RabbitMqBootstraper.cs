@@ -1,4 +1,5 @@
 ﻿using dotnet.doduo.Configuration.Contract;
+using dotnet.doduo.MessageBroker.Contract;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
@@ -8,18 +9,21 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 {
     internal sealed class RabbitMqBootstraper : IConfigurationExtension
     {
-        private readonly Action<RabbitMqOptions> _configure;
+        private readonly RabbitMqOptions m_options;
 
-        public RabbitMqBootstraper(Action<RabbitMqOptions> configure)
+        public RabbitMqBootstraper(RabbitMqOptions options)
         {
-            _configure = configure;
+            m_options = options;
         }
 
         public void AddServices(IServiceCollection services)
         {
-            var options = new RabbitMqOptions();
-            _configure?.Invoke(options);
-            services.AddSingleton(options);
+            services.AddSingleton(_options);
+
+            services.AddSingleton<IDoduoMessageBrokerConnection<RabbitMqDoduoProducer>, DoduoRabbitMqConnection>();
+            services.AddSingleton<IDoduoProducer, RabbitMqDoduoProducer>();
+
+            services.AddScoped<IDoduoPublish, RabbitMqPublish>();
 
         }
     }
