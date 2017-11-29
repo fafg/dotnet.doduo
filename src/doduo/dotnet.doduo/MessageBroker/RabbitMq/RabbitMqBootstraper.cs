@@ -18,7 +18,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public void AddServices(IServiceCollection services)
         {
-            services.AddSingleton(_options);
+            services.AddSingleton(m_options);
 
             services.AddSingleton<IDoduoMessageBrokerConnection<RabbitMqDoduoProducer>, DoduoRabbitMqConnection>();
             services.AddSingleton<IDoduoProducer, RabbitMqDoduoProducer>();
