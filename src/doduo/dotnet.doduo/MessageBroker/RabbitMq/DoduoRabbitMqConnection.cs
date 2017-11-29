@@ -21,7 +21,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public IConnection GetConnection()
         {
-            if (_connection != null && m_connection.IsOpen)
+            if (m_connection != null && m_connection.IsOpen)
                 return m_connection;
             m_connection = m_createConnection();
             m_connection.ConnectionShutdown += ConnectionShutdown;
@@ -52,7 +52,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public void Dispose()
         {
-            if (_connection != null && m_connection.IsOpen)
+            if (m_connection != null && m_connection.IsOpen)
                 m_connection.Dispose();
         }
 

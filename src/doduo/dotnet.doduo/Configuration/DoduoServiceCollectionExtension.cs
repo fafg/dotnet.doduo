@@ -1,4 +1,5 @@
 ﻿using dotnet.doduo;
+using dotnet.doduo.Configuration;
 using System;
 using System.Collections.Generic;
 
