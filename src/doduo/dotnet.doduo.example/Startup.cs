@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Swashbuckle.AspNetCore.Swagger;
 
 namespace dotnet.doduo.example
 {
@@ -32,6 +33,12 @@ namespace dotnet.doduo.example
             {
                 x.UseRabbitMQ();
             });
+
+            services.AddMvc();
+            services.AddSwaggerGen(c =>
+            {
+                c.SwaggerDoc("v1", new Info { Title = "Seed API", Version = $"1.0.0.0" });
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -52,6 +59,22 @@ namespace dotnet.doduo.example
             IRouter routes = routeBuilder.Build();
             app.UseRouter(routes);
             app.UseDoduo();
+
+            app.UseMvc(routes2 =>
+            {
+                routes2.MapRoute(
+                    name: "default",
+                    template: "{controller=Home}/{action=Index}/{id?}");
+
+                routes2.MapSpaFallbackRoute(
+                    name: "spa-fallback",
+                    defaults: new { controller = "Home", action = "Index" });
+            });
+            app.UseSwagger();
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Comunique-se Template Api");
+            });
         }
     }
 }

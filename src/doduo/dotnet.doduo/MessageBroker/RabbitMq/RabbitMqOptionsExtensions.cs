@@ -10,13 +10,21 @@ namespace dotnet.doduo
     {
         public static DoduoConfiguration UseRabbitMQ(this DoduoConfiguration configuration)
         {
-           return configuration.UseRabbitMQ(opt => opt = RabbitMqOptions.Default());
+            return configuration.UseRabbitMQ(RabbitMqOptions.Default());
         }
         public static DoduoConfiguration UseRabbitMQ(this DoduoConfiguration configuration, Action<RabbitMqOptions> configure)
         {
             if (configure == null) throw new ArgumentNullException(nameof(configure));
 
-            configuration.RegisterExtension(new RabbitMqBootstraper(configure));
+            var options = new RabbitMqOptions();
+            configure?.Invoke(options);
+
+            return configuration.UseRabbitMQ(options);
+        }
+
+        private static DoduoConfiguration UseRabbitMQ(this DoduoConfiguration configuration, RabbitMqOptions options)
+        {
+            configuration.RegisterExtension(new RabbitMqBootstraper(options));
 
             return configuration;
         }
