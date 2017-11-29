@@ -3,12 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
 
 namespace dotnet.doduo.example.Controllers
 {
     [Route("api/[controller]")]
-    [AllowAnonymous]
     public class ValuesController : Controller
     {
         // GET api/values
