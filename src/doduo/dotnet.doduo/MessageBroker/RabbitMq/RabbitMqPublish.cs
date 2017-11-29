@@ -1,7 +1,9 @@
 ﻿using dotnet.doduo.MessageBroker.Contract;
+using Newtonsoft.Json;
 using RabbitMQ.Client;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,7 +20,8 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public Task PublishAsync<T>(string name, T obj) where T : class
         {
-          return  _connection.Rent().ProduceAsync(name, null);            
+            string json = JsonConvert.SerializeObject(obj);            
+            return  _connection.Rent().ProduceAsync(name, Encoding.ASCII.GetBytes(json));            
         }
 
         public Task PublishAsync(string name, IComparable value)

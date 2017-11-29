@@ -23,6 +23,8 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
             try
             {
                 _model.ExchangeDeclare(_options.TopicExchangeName, RabbitMqConstants.EXCHANGE_TYPE, true);
+                _model.QueueDeclare(topic, true,false);
+                _model.QueueBind(topic, _options.TopicExchangeName, topic);
                 _model.BasicPublish(_options.TopicExchangeName,
                         topic,
                         null,
