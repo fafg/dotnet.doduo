@@ -9,11 +9,11 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 {
     internal sealed class RabbitMqBootstraper : IConfigurationExtension
     {
-        private readonly RabbitMqOptions _options;
+        private readonly RabbitMqOptions m_options;
 
         public RabbitMqBootstraper(RabbitMqOptions options)
         {
-            _options = options;
+            m_options = options;
         }
 
         public void AddServices(IServiceCollection services)

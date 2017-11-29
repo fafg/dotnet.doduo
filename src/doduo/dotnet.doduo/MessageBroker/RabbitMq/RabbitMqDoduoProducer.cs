@@ -10,22 +10,22 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 {
     public class RabbitMqDoduoProducer : IDoduoProducer
     {
-        private readonly IModel _model;
-        private readonly RabbitMqOptions _options;
+        private readonly IModel m_model;
+        private readonly RabbitMqOptions m_options;
         public RabbitMqDoduoProducer(IModel model, RabbitMqOptions options)
         {
-            _model = model;
-            _options = options;
+            m_model = model;
+            m_options = options;
         }
 
         public Task<ProducerResponse> ProduceAsync(string topic, byte[] body)
         {
             try
             {
-                _model.ExchangeDeclare(_options.TopicExchangeName, RabbitMqConstants.EXCHANGE_TYPE, true);
-                _model.QueueDeclare(topic, true,false);
-                _model.QueueBind(topic, _options.TopicExchangeName, topic);
-                _model.BasicPublish(_options.TopicExchangeName,
+                m_model.ExchangeDeclare(_options.TopicExchangeName, RabbitMqConstants.EXCHANGE_TYPE, true);
+                m_model.QueueDeclare(topic, true,false);
+                m_model.QueueBind(topic, m_options.TopicExchangeName, topic);
+                m_model.BasicPublish(_options.TopicExchangeName,
                         topic,
                         null,
                         body);
@@ -40,7 +40,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public void Dispose()
         {
-            _model.Dispose();
+            m_model.Dispose();
         }
 
         ~RabbitMqDoduoProducer()

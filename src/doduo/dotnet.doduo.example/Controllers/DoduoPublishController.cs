@@ -7,18 +7,18 @@ namespace dotnet.doduo.example.Controllers
     [Route("api/[controller]")]
     public class DoduoPublishController : Controller
     {
-        private readonly IDoduoPublish _doduoPublish;
+        private readonly IDoduoPublish m_doduoPublish;
 
         public DoduoPublishController(IDoduoPublish doduoPublish)
         {
-            _doduoPublish = doduoPublish;
+            m_doduoPublish = doduoPublish;
         }
 
         [Route("Send")]
         [HttpPost]
         public async void SendAsync([FromBody]DoduoPublishDto doduoPublishDto)
         {
-           await _doduoPublish.PublishAsync("doduo.teste", doduoPublishDto);
+           await m_doduoPublish.PublishAsync("doduo.teste", doduoPublishDto);
         }
     }
 

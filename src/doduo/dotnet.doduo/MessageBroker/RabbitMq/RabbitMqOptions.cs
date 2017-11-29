@@ -18,10 +18,10 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public static RabbitMqOptions Default()
         {
-            return _instanceDefaultStatic;
+            return m_instanceDefaultStatic;
         }
 
-        private readonly static RabbitMqOptions _instanceDefaultStatic = new RabbitMqOptions
+        private readonly static RabbitMqOptions m_instanceDefaultStatic = new RabbitMqOptions
         {
             Host = "localhost",
             TopicExchangeName = "doduo.default"

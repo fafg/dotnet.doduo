@@ -6,26 +6,26 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 {
     public class DoduoRabbitMqConnection : IDoduoMessageBrokerConnection<RabbitMqDoduoProducer>
     {
-        private readonly Func<IConnection> _createConnection;
-        private IConnection _connection;
-        private readonly RabbitMqOptions _options;
+        private readonly Func<IConnection> m_createConnection;
+        private IConnection m_connection;
+        private readonly RabbitMqOptions m_options;
 
-        private int _count;
-        private int _maxSize;
+        private int m_count;
+        private int m_maxSize;
 
         public DoduoRabbitMqConnection(RabbitMqOptions options)
         {
-            _options = options;
-            _createConnection = CreateConnection(options);
+            m_options = options;
+            m_createConnection = CreateConnection(options);
         }
 
         public IConnection GetConnection()
         {
-            if (_connection != null && _connection.IsOpen)
-                return _connection;
-            _connection = _createConnection();
-            _connection.ConnectionShutdown += ConnectionShutdown;
-            return _connection;
+            if (_connection != null && m_connection.IsOpen)
+                return m_connection;
+            m_connection = m_createConnection();
+            m_connection.ConnectionShutdown += ConnectionShutdown;
+            return m_connection;
         }
 
         private void ConnectionShutdown(object sender, ShutdownEventArgs e)
@@ -52,14 +52,14 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public void Dispose()
         {
-            if (_connection != null && _connection.IsOpen)
-                _connection.Dispose();
+            if (_connection != null && m_connection.IsOpen)
+                m_connection.Dispose();
         }
 
         public IDoduoProducer Rent()
         {       
             var model = GetConnection().CreateModel();
-            return new RabbitMqDoduoProducer(model, _options);
+            return new RabbitMqDoduoProducer(model, m_options);
         }
 
         public bool Return(IDoduoProducer context)
