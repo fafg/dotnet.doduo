@@ -20,13 +20,15 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public Task PublishAsync<T>(string name, T obj) where T : class
         {
-            string json = JsonConvert.SerializeObject(obj);            
-            return  _connection.Rent().ProduceAsync(name, Encoding.ASCII.GetBytes(json));            
+            string json = JsonConvert.SerializeObject(obj);
+            using (var response = _connection.Rent().ProduceAsync(name, Encoding.ASCII.GetBytes(json)))
+                return response;
         }
 
         public Task PublishAsync(string name, IComparable value)
         {
-            return _connection.Rent().ProduceAsync(name, null);
+            using (var response = _connection.Rent().ProduceAsync(name, Encoding.ASCII.GetBytes(value.ToString())))
+                return response;
         }
     }
 }
