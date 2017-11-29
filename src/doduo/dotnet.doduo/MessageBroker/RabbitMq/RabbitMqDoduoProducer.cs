@@ -22,10 +22,10 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         {
             try
             {
-                m_model.ExchangeDeclare(_options.TopicExchangeName, RabbitMqConstants.EXCHANGE_TYPE, true);
+                m_model.ExchangeDeclare(m_options.TopicExchangeName, RabbitMqConstants.EXCHANGE_TYPE, true);
                 m_model.QueueDeclare(topic, true,false);
                 m_model.QueueBind(topic, m_options.TopicExchangeName, topic);
-                m_model.BasicPublish(_options.TopicExchangeName,
+                m_model.BasicPublish(m_options.TopicExchangeName,
                         topic,
                         null,
                         body);
