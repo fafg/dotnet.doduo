@@ -9,18 +9,16 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 {
     internal sealed class RabbitMqBootstraper : IConfigurationExtension
     {
-        private readonly Action<RabbitMqOptions> _configure;
+        private readonly RabbitMqOptions _options;
 
-        public RabbitMqBootstraper(Action<RabbitMqOptions> configure)
+        public RabbitMqBootstraper(RabbitMqOptions options)
         {
-            _configure = configure;
+            _options = options;
         }
 
         public void AddServices(IServiceCollection services)
         {
-            var options = new RabbitMqOptions();
-            _configure?.Invoke(options);
-            services.AddSingleton(options);
+            services.AddSingleton(_options);
 
             services.AddSingleton<IDoduoMessageBrokerConnection<RabbitMqDoduoProducer>, DoduoRabbitMqConnection>();
             services.AddSingleton<IDoduoProducer, RabbitMqDoduoProducer>();
