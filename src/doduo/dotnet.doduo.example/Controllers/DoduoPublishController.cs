@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using dotnet.doduo.MessageBroker.Contract;
+using dotnet.doduo.Attributes;
 
 namespace dotnet.doduo.example.Controllers
 {
@@ -20,6 +21,14 @@ namespace dotnet.doduo.example.Controllers
         {
            await m_doduoPublish.PublishAsync("doduo.teste", doduoPublishDto);
         }
+
+        [Route("Test")]
+        [HttpPost]
+        [DoduoTopicAttribute("doduo.teste")]
+        public async void Test([FromBody]DoduoPublishDto doduoPublishDto)
+        {
+        }
+
     }
 
     public class DoduoPublishDto

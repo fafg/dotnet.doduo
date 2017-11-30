@@ -3,7 +3,7 @@
 namespace dotnet.doduo.Attributes
 {
     [AttributeUsage(AttributeTargets.Method | AttributeTargets.Class, AllowMultiple = true)]
-    public abstract class DoduoTopicAttribute : Attribute
+    public class DoduoTopicAttribute : Attribute
     {
         public DoduoTopicAttribute(string topic)
         {

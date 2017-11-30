@@ -22,7 +22,9 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
             services.AddSingleton<IDoduoMessageBrokerConnection<RabbitMqDoduoProducer>, DoduoRabbitMqConnection>();
             services.AddSingleton<IDoduoProducer, RabbitMqDoduoProducer>();
+            services.AddSingleton<IDoduoConsumer, RabbitMqDoduoConsumer>();
 
+            services.AddSingleton<IDoduoSubscribe, RabbitMqSubscribe>();
             services.AddScoped<IDoduoPublish, RabbitMqPublish>();
 
         }

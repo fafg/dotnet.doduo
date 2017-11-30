@@ -1,5 +1,7 @@
 ﻿using dotnet.doduo;
 using dotnet.doduo.Configuration;
+using dotnet.doduo.Configuration.Contract;
+using dotnet.doduo.MessageBroker;
 using System;
 using System.Collections.Generic;
 
@@ -14,7 +16,11 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure(setupAction);
             AddSubscribeServices(services);
 
-            
+            services.AddSingleton<DoduoConsumerSelector>();
+
+            services.AddSingleton<DoduoConsumerHandler>();
+            services.AddSingleton<IBootstrapper, DefaultBootstrapper>();
+
             DoduoConfiguration options = new DoduoConfiguration();
             setupAction.Invoke(options);
 

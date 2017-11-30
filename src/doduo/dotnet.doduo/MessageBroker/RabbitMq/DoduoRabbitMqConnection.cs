@@ -62,6 +62,12 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
             return new RabbitMqDoduoProducer(model, m_options);
         }
 
+        public IDoduoConsumer Consumer(string topic)
+        {
+            return new RabbitMqDoduoConsumer(topic, GetConnection(), m_options);
+        }
+        
+
         public bool Return(IDoduoProducer context)
         {
             throw new NotImplementedException();
