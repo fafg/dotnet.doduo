@@ -10,6 +10,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Reflection;
+using dotnet.doduo.Helpers;
 
 namespace dotnet.doduo.MessageBroker
 {
@@ -61,10 +63,9 @@ namespace dotnet.doduo.MessageBroker
             {
                 try
                 {
-
                     Console.WriteLine($"{message.Content}   ---- {candidate.Attribute.Topic} : {candidate.MethodInfo.Name}, {candidate.ImplTypeInfo.Name} : Server :: {ServerTestUid.ToString()}");
+
                     InvokeAsync(candidate, message).Wait();
-                    //candidate.MethodInfo.
                     client.Commit();
                 }
                 catch (Exception e)
@@ -94,22 +95,31 @@ namespace dotnet.doduo.MessageBroker
             }
         }
 
-        private async Task<object> ExecuteWithParameterAsync(ObjectMethodExecutor executor,
-    object controller, string json)
+        private async Task<object> ExecuteWithParameterAsync(ObjectMethodExecutor executor, object controller, DoduoMessageContent content)
         {
-            var parameter = executor.MethodParameters[0];
             try
             {
-                var messageParameter = JObject.Parse(json).ToObject(parameter.ParameterType);
+                IEnumerable<object> messageParameters = ParameterBuilderHelper.BuildParameters(executor.MethodParameters, content);
+                int ssss = messageParameters.Count();
                 if (executor.IsMethodAsync)
-                    return await executor.ExecuteAsync(controller, messageParameter);
-                return executor.Execute(controller, messageParameter);
+                    return await executor.ExecuteAsync(controller, messageParameters.ToArray());
+                return executor.Execute(controller, messageParameters.ToArray());
 
-                throw new Exception($"Parameters:{parameter.Name} bind failed! ParameterString is: {json} ");
+                throw new Exception($"Parameters: `xpto` bind failed! ParameterString is:  ");
             }
             catch (FormatException ex)
             {
                 return null;
+            }
+        }
+
+        private IEnumerable<object> GetBindObjects(IEnumerable<ParameterInfo> parameters, DoduoMessageContentObject[] objects)
+        {
+            foreach (var parameter in parameters)
+            {
+                DoduoMessageContentObject obj = objects.Where(p => p.PropertyName == parameter.ParameterType.ToString()).FirstOrDefault();
+                if (obj != null)
+                    yield return JObject.Parse(obj.Value.ToString()).ToObject(parameter.ParameterType);
             }
         }
     }

@@ -19,13 +19,13 @@ namespace dotnet.doduo.example.Controllers
         [HttpPost]
         public async void SendAsync([FromBody]DoduoPublishDto doduoPublishDto)
         {
-           await m_doduoPublish.PublishAsync("doduo.teste", doduoPublishDto);
+           await m_doduoPublish.PublishAsync("doduo.teste", doduoPublishDto, "sssssss");
         }
 
         [Route("Test")]
         [HttpPost]
         [DoduoTopicAttribute("doduo.teste")]
-        public async void Test([FromBody]DoduoPublishDto doduoPublishDto)
+        public async void Test([FromBody]DoduoPublishDto doduoPublishDto, string sss, string ssssssbdvfb)
         {
         }
 

@@ -8,6 +8,6 @@ namespace dotnet.doduo.MessageBroker.Model
     {
         public string Group { get; set; }
         public string Name { get; set; }
-        public string Content { get; set; }
+        public DoduoMessageContent Content { get; set; }
     }
 }

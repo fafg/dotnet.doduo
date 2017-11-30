@@ -7,6 +7,7 @@ using System.Threading;
 using RabbitMQ.Client.Events;
 using System.Text;
 using dotnet.doduo.MessageBroker.Model;
+using Newtonsoft.Json.Linq;
 
 namespace dotnet.doduo.MessageBroker.RabbitMq
 {
@@ -75,7 +76,6 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public void Reject()
         {
-            throw new NotImplementedException();
         }
 
         private void OnConsumerReceived(object sender, BasicDeliverEventArgs e)
@@ -85,7 +85,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
             {
                 Group = m_topic,
                 Name = e.RoutingKey,
-                Content = Encoding.UTF8.GetString(e.Body)
+                Content = JObject.Parse(Encoding.UTF8.GetString(e.Body)).ToObject<DoduoMessageContent>()
             };
             OnMessageReceived?.Invoke(sender, message);
         }
