@@ -25,7 +25,7 @@ namespace dotnet.doduo.example.Controllers
         [Route("Test")]
         [HttpPost]
         [DoduoTopicAttribute("doduo.teste")]
-        public async void Test([FromBody]DoduoPublishDto doduoPublishDto, string sss, string ssssssbdvfb)
+        public async void Test([FromBody]DoduoPublishDto doduoPublishDto, string sss, int ssssssbdvfb)
         {
         }
 

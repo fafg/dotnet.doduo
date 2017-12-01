@@ -4,7 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 
 namespace dotnet.doduo.Helpers
 {
@@ -28,7 +27,7 @@ namespace dotnet.doduo.Helpers
                 objects.Remove(obj);
 
                 if (obj == null)
-                    yield return null;
+                    yield return GetDefaultValue(parameter);
                 else
                     yield return GetValueObject(parameter, obj);
             }
@@ -36,7 +35,6 @@ namespace dotnet.doduo.Helpers
 
         private static object GetValueObject(ParameterInfo parameter, DoduoMessageContentObject obj)
         {
-            object valueDafault = parameter.HasDefaultValue ? parameter.DefaultValue : null;
             object value = null;
 
             if (!obj.IsPrimitive)
@@ -44,7 +42,27 @@ namespace dotnet.doduo.Helpers
             else
                 value = obj.Value;
 
-            return value ?? valueDafault;
+            return value ?? GetDefaultValue(parameter);
+        }
+
+        public static object GetDefaultValue(ParameterInfo parameter)
+        {
+            if (parameter.HasDefaultValue)
+                return parameter.DefaultValue;
+
+           else if (!parameter.ParameterType.IsPrimitive && parameter.ParameterType != typeof(IConvertible))
+                return null;
+
+            else if (parameter.ParameterType == typeof(int)
+                || parameter.ParameterType == typeof(short)
+                || parameter.ParameterType == typeof(long) 
+                || parameter.ParameterType == typeof(decimal)
+                || parameter.ParameterType == typeof(float))
+                return 0;
+
+            else if (parameter.ParameterType == typeof(DateTime))
+                return DateTime.MinValue;
+            return null;
         }
     }
 }
