@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using dotnet.doduo.Configuration.Contract;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -15,6 +17,9 @@ namespace Microsoft.AspNetCore.Builder
             var provider = app.ApplicationServices;
 
             CheckRequirement(provider);
+
+            var bootstrapper = provider.GetRequiredService<IBootstrapper>();
+            bootstrapper.BootstrapAsync();
 
             return app;
         }

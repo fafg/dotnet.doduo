@@ -15,6 +15,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         public int ReadTimeout { get; set; } = RabbitMqConstants.DEFAULT_CONNECTION_TIMEOUT;
         public int WriteTimeout { get; set; } = RabbitMqConstants.DEFAULT_CONNECTION_TIMEOUT;
         public string TopicExchangeName { get; set; }
+        public int MessageTTL { get; set; } = 2000;
 
         public static RabbitMqOptions Default()
         {
