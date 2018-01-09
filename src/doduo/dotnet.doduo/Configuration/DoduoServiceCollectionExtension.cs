@@ -19,6 +19,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.AddSingleton<DoduoConsumerSelector>();
 
             services.AddSingleton<DoduoConsumerHandler>();
+            services.AddSingleton<DoduoResponseHandler>(); 
             services.AddSingleton<IBootstrapper, DefaultBootstrapper>();
 
             DoduoConfiguration options = new DoduoConfiguration();

@@ -2,7 +2,8 @@
 {
     public enum ProducerResponseType
     {
-        Ok = 200,
-        Faiure = 500
+        Ok = System.Net.HttpStatusCode.OK,
+        Faiure = System.Net.HttpStatusCode.InternalServerError,
+        Running = 0
     }
 }

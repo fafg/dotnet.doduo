@@ -1,4 +1,5 @@
 ﻿using dotnet.doduo.MessageBroker.Contract;
+using dotnet.doduo.MessageBroker.Model;
 using RabbitMQ.Client;
 using System;
 
@@ -62,9 +63,9 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
             return new RabbitMqDoduoProducer(model, m_options);
         }
 
-        public IDoduoConsumer Consumer(string topic)
+        public IDoduoConsumer Consumer(string topic, DoduoConsumerType doduoConsumerType)
         {
-            return new RabbitMqDoduoConsumer(topic, GetConnection(), m_options);
+            return new RabbitMqDoduoConsumer(topic, GetConnection(), m_options, doduoConsumerType);
         }
         
 

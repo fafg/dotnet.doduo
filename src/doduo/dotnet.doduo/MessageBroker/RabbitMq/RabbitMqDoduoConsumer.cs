@@ -14,21 +14,24 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
     internal class RabbitMqDoduoConsumer : IDoduoConsumer
     {
         private readonly string m_topic;
+        private readonly DoduoConsumerType m_doduoConsumerType;
         private readonly IConnection m_connection;
         private IModel m_channel;
         private readonly RabbitMqOptions m_options;
         private ulong m_deliveryTag;
 
-        public RabbitMqDoduoConsumer(string topic, IConnection connection, RabbitMqOptions options)
+        public RabbitMqDoduoConsumer(string topic, IConnection connection, RabbitMqOptions options, DoduoConsumerType doduoConsumerType)
         {
             m_topic = topic;
             m_connection = connection;
             m_options = options;
+            m_doduoConsumerType = doduoConsumerType;
 
             InitClient();
         }
 
         public event EventHandler<DoduoMessage> OnMessageReceived;
+        public event EventHandler<DoduoResponseContent> OnResponseMessageReceived;
 
         private void InitClient()
         {
@@ -50,7 +53,16 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         public void Listening(TimeSpan timeout, CancellationToken cancellationToken)
         {
             var consumer = new EventingBasicConsumer(m_channel);
-            consumer.Received += OnConsumerReceived;
+
+            switch (m_doduoConsumerType)
+            {
+                case DoduoConsumerType.Request:
+                    consumer.Received += OnConsumerReceived;
+                    break;
+                case DoduoConsumerType.Response:
+                    consumer.Received += OnConsumerResponsed;
+                    break;
+            }
 
             m_channel.BasicConsume(m_topic, false, consumer);
 
@@ -80,14 +92,24 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         private void OnConsumerReceived(object sender, BasicDeliverEventArgs e)
         {
+            JObject content = JObject.Parse(Encoding.UTF8.GetString(e.Body));
+
             m_deliveryTag = e.DeliveryTag;
             var message = new DoduoMessage
             {
                 Group = m_topic,
                 Name = e.RoutingKey,
-                Content = JObject.Parse(Encoding.UTF8.GetString(e.Body)).ToObject<DoduoMessageContent>()
+                Content = content.ToObject<DoduoMessageContent>()
             };
             OnMessageReceived?.Invoke(sender, message);
+        }
+
+        private void OnConsumerResponsed(object sender, BasicDeliverEventArgs e)
+        {
+            JObject content = JObject.Parse(Encoding.UTF8.GetString(e.Body));
+            m_deliveryTag = e.DeliveryTag;
+
+            OnResponseMessageReceived?.Invoke(sender, content.ToObject<DoduoResponseContent>());
         }
 
         public void Dispose()

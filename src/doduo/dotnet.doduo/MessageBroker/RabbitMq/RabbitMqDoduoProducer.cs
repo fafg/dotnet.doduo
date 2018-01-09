@@ -18,7 +18,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
             m_options = options;
         }
 
-        public Task<ProducerResponse> ProduceAsync(string topic, byte[] body)
+        public Task<DoduoResponse> ProduceAsync(string topic, byte[] body)
         {
             try
             {
@@ -29,11 +29,30 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
                         null,
                         body);
 
-                return Task.FromResult(ProducerResponse.Ok());
+                return Task.FromResult(DoduoResponse.Ok());
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ProducerResponse.Error(ex));
+                return Task.FromResult(DoduoResponse.Error(ex));
+            }
+        }
+
+        public Task<DoduoResponse> ProduceAsync(string topic, byte[] body, Guid requestId)
+        {
+            try
+            {
+                m_model.ExchangeDeclare(m_options.TopicExchangeName, RabbitMqConstants.EXCHANGE_TYPE, true);
+
+                m_model.BasicPublish(m_options.TopicExchangeName,
+                        topic,
+                        null,
+                        body);
+
+                return DoduoResponse.Response(topic, requestId);
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(DoduoResponse.Error(ex));
             }
         }
 
