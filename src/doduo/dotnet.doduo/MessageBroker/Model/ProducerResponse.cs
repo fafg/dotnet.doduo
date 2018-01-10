@@ -1,10 +1,4 @@
-﻿using dotnet.doduo.DoduoQueue;
-using dotnet.doduo.MessageBroker.Contract;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace dotnet.doduo.MessageBroker.Model
 {

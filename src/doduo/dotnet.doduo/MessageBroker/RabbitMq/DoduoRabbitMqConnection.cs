@@ -1,5 +1,6 @@
 ﻿using dotnet.doduo.MessageBroker.Contract;
 using dotnet.doduo.MessageBroker.Model;
+using dotnet.doduo.Model;
 using RabbitMQ.Client;
 using System;
 

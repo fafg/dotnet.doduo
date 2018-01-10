@@ -1,10 +1,4 @@
-﻿using dotnet.doduo.DoduoQueue;
-using dotnet.doduo.MessageBroker.Contract;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System;
 
 namespace dotnet.doduo.MessageBroker.Model
 {
@@ -12,7 +6,6 @@ namespace dotnet.doduo.MessageBroker.Model
     {
         public ProducerResponseType Code { get; internal set; }
         public Exception Exception { get; private set; }
-        public DateTime StartRequest { get; internal set; }
         public DoduoResponseContent Body { get; internal set; }
         public DoduoMessageContent Request { get; internal set; }
 
@@ -28,7 +21,6 @@ namespace dotnet.doduo.MessageBroker.Model
         {
             return new DoduoResponse
             {
-                StartRequest = DateTime.Now,
                 Code = ProducerResponseType.Running
             };
         }
@@ -40,28 +32,6 @@ namespace dotnet.doduo.MessageBroker.Model
                 Code = ProducerResponseType.Ok,
                 Body = body
             };
-        }
-
-        public static async Task<DoduoResponse> Response(string topic, Guid requestId)
-        {
-            DateTime dateWaitStart = DateTime.Now;
-            CancellationTokenSource cts = new CancellationTokenSource();
-            Task<DoduoResponse> taskProduceResponse = Task.Run(() =>
-                GetResponse(topic, requestId)
-                , cts.Token);
-
-            return await taskProduceResponse;
-        }
-        public static async Task<DoduoResponse> GetResponse(string topic, Guid requestId)
-        {
-            try
-            {
-                return await DoduoQueueResponse.Get(topic, requestId);
-            }
-            catch (Exception)
-            {
-                return await GetResponse(topic, requestId);
-            }
         }
 
         public static DoduoResponse Error(Exception ex)

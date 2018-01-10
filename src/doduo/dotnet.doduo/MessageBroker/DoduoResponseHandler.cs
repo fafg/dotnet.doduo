@@ -1,18 +1,11 @@
 ﻿using dotnet.doduo.MessageBroker.Contract;
 using dotnet.doduo.MessageBroker.Model;
 using dotnet.doduo.Model;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Internal;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Reflection;
-using dotnet.doduo.Helpers;
-using dotnet.doduo.DoduoQueue;
 
 namespace dotnet.doduo.MessageBroker
 {
@@ -23,7 +16,7 @@ namespace dotnet.doduo.MessageBroker
         private readonly IDoduoSubscribe m_doduoSubscribe;
         private readonly IServiceProvider m_serviceProvider;
         private Task m_compositeTask;
-        private List<string> _taskTopic = new List<string>();
+        private List<string> m_taskTopic = new List<string>();
 
         private readonly Guid ServerTestUid = Guid.NewGuid();
 
@@ -37,17 +30,15 @@ namespace dotnet.doduo.MessageBroker
         public void Dispose()
         {
             m_cancellationToken.Cancel();
-            DoduoQueueResponse.Clear();
+            DoduoTierSingleton.Instance.Clear();
         }
 
         public void Start(string topic, DoduoMessageContent content)
         {
             topic = $"{topic}.response";
+            DoduoTierSingleton.Instance.SendRequestWait(topic, content);
 
-            DoduoQueueResponse.Create(topic);
-            DoduoQueueResponse.SendRequestWait(topic, content);
-
-            if (_taskTopic.Any(p => p.Equals(topic)))
+            if (m_taskTopic.Any(p => p.Equals(topic)))
                 return;
 
             Task.Factory.StartNew(() =>
@@ -78,7 +69,8 @@ namespace dotnet.doduo.MessageBroker
                 {
                     response = ProducerResponse.Error(message.ResponseId, e);
                 }
-                DoduoQueueResponse.Send(topic, response);
+
+                DoduoTierSingleton.Instance.Send(topic, response).ConfigureAwait(false);
                 client.Commit();                
             };
         }

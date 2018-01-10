@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using dotnet.doduo.MessageBroker.Contract;
 using dotnet.doduo.Attributes;
 using dotnet.doduo.MessageBroker.Model;
+using System;
 
 namespace dotnet.doduo.example.Controllers
 {
@@ -25,9 +26,13 @@ namespace dotnet.doduo.example.Controllers
 
         [Route("SendSync")]
         [HttpPost]
-        public async Task<DoduoPublishDto> SendSync([FromBody]DoduoPublishDto doduoPublishDto)
+        public DoduoPublishDto SendSync([FromBody]DoduoPublishDto doduoPublishDto)
         {
-           return await m_doduoPublish.PublishAsync<DoduoPublishDto>("doduo.teste.sync", doduoPublishDto, "sssssss");
+            DateTime dateTime = DateTime.Now;
+            var aaa  = m_doduoPublish.PublishAsync<DoduoPublishDto>("doduo.teste.sync", doduoPublishDto, "sssssss").Result;
+            Console.Write($"Time Daley Novo:: {(DateTime.Now - dateTime).TotalMilliseconds}");
+
+            return aaa;
         }
 
         [Route("Test")]

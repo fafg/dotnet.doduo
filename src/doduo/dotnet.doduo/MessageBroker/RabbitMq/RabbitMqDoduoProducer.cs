@@ -5,6 +5,8 @@ using System.Text;
 using dotnet.doduo.MessageBroker.Model;
 using RabbitMQ.Client;
 using System.Threading.Tasks;
+using System.Threading;
+using dotnet.doduo.Model;
 
 namespace dotnet.doduo.MessageBroker.RabbitMq
 {
@@ -12,6 +14,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
     {
         private readonly IModel m_model;
         private readonly RabbitMqOptions m_options;
+
         public RabbitMqDoduoProducer(IModel model, RabbitMqOptions options)
         {
             m_model = model;
@@ -48,11 +51,36 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
                         null,
                         body);
 
-                return DoduoResponse.Response(topic, requestId);
+                return WaitResponse(topic, requestId);
             }
             catch (Exception ex)
             {
                 return Task.FromResult(DoduoResponse.Error(ex));
+            }
+        }
+
+        public Task<DoduoResponse> WaitResponse(string topic, Guid requestId)
+        {
+            DateTime dateWaitStart = DateTime.Now;
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            Task<DoduoResponse> taskProduceResponse = Task.Run(() =>
+                GetResponse(topic, requestId)
+                , cts.Token);
+
+            return taskProduceResponse;
+        }
+
+        public async Task<DoduoResponse> GetResponse(string topic, Guid requestId)
+        {
+            try
+            {
+                topic = $"{topic}.response";
+                return await DoduoTierSingleton.Instance.Get(topic, requestId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("List not Exists");
             }
         }
 

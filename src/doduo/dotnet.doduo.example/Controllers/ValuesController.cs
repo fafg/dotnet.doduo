@@ -13,7 +13,10 @@ namespace dotnet.doduo.example.Controllers
         [HttpGet]
         public IEnumerable<string> Get()
         {
-            return new string[] { "value1", "value2" };
+            DateTime dateTime = DateTime.Now;
+            var aaaa = new string[] { "value1", "value2" };
+            Console.Write($"Time Daley :: {(DateTime.Now - dateTime).TotalMilliseconds}");
+            return aaaa;
         }
 
         // GET api/values/5
