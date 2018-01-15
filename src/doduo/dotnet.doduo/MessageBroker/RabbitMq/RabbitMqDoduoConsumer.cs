@@ -8,6 +8,7 @@ using RabbitMQ.Client.Events;
 using System.Text;
 using dotnet.doduo.MessageBroker.Model;
 using Newtonsoft.Json.Linq;
+using dotnet.doduo.Model;
 
 namespace dotnet.doduo.MessageBroker.RabbitMq
 {
@@ -16,24 +17,26 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         private readonly string m_topic;
         private readonly DoduoConsumerType m_doduoConsumerType;
         private readonly IConnection m_connection;
+        private readonly DoduoApplicationIdentifier m_applicationIdentifier;
         private IModel m_channel;
         private readonly RabbitMqOptions m_options;
         private ulong m_deliveryTag;
 
-        public RabbitMqDoduoConsumer(string topic, IConnection connection, RabbitMqOptions options, DoduoConsumerType doduoConsumerType)
+        public RabbitMqDoduoConsumer(string topic, IConnection connection, RabbitMqOptions options, DoduoConsumerType doduoConsumerType, DoduoApplicationIdentifier applicationIdentifier)
         {
             m_topic = topic;
             m_connection = connection;
             m_options = options;
             m_doduoConsumerType = doduoConsumerType;
+            m_applicationIdentifier = applicationIdentifier;
 
-            InitClient();
+            InitClient(doduoConsumerType == DoduoConsumerType.Response);
         }
 
         public event EventHandler<DoduoMessage> OnMessageReceived;
         public event EventHandler<DoduoResponseContent> OnResponseMessageReceived;
 
-        private void InitClient()
+        private void InitClient(bool autoDelete)
         {
             m_channel = m_connection.CreateModel();
 
@@ -46,7 +49,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
                 { "x-message-ttl", m_options.MessageTTL }
             };
 
-            m_channel.QueueDeclare(m_topic, true, false, false, arguments);
+            m_channel.QueueDeclare(m_topic, true, false, autoDelete, arguments);
             m_channel.QueueBind(m_topic, m_options.TopicExchangeName, m_topic);
         }
 
@@ -64,7 +67,9 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
                     break;
             }
 
-            m_channel.BasicConsume(m_topic, false, consumer);
+            var a = m_channel.CreateBasicProperties();
+            a.AppId = "Test";
+            m_channel.BasicConsume(consumer, m_topic, autoAck: false);
 
             while (true)
             {
@@ -114,6 +119,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
 
         public void Dispose()
         {
+            m_channel.QueueDelete($"{m_topic}.response.{m_applicationIdentifier.ApplicationId}");
             m_channel.Dispose();
             m_connection.Dispose();
         }

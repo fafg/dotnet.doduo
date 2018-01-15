@@ -1,5 +1,6 @@
 ﻿using dotnet.doduo.MessageBroker.Contract;
 using dotnet.doduo.MessageBroker.Model;
+using dotnet.doduo.Model;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RabbitMQ.Client;
@@ -15,12 +16,14 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
     {
         private readonly IDoduoMessageBrokerConnection<RabbitMqDoduoProducer> m_connection;
         private readonly DoduoResponseHandler m_doduoResponseHandler;
+        private readonly DoduoApplicationIdentifier m_applicationIdentifier;
 
         public RabbitMqPublish(IDoduoMessageBrokerConnection<RabbitMqDoduoProducer> connection,
-            DoduoResponseHandler doduoResponseHandler)
+            DoduoResponseHandler doduoResponseHandler, DoduoApplicationIdentifier applicationIdentifier)
         {
             m_connection = connection;
             m_doduoResponseHandler = doduoResponseHandler;
+            m_applicationIdentifier = applicationIdentifier;
         }
 
         public Task PublishAsyncWithoutReturn(string name, params object[] values)
@@ -35,7 +38,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         {
             string json = JsonConvert.SerializeObject(doduoResponse);
             
-            using (var response = m_connection.Rent().ProduceAsync($"{topic}.response", Encoding.ASCII.GetBytes(json)))
+            using (var response = m_connection.Rent().ProduceAsync($"{topic}.response.{m_applicationIdentifier.ApplicationId}", Encoding.ASCII.GetBytes(json)))
                 return response;
         }
 
