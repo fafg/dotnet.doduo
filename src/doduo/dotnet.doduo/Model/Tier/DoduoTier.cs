@@ -3,7 +3,7 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace dotnet.doduo.Model
+namespace dotnet.doduo.Model.Tier
 {
     public class DoduoTier
     {

@@ -1,11 +1,10 @@
 ﻿using dotnet.doduo.MessageBroker.Contract;
 using System;
-using System.Collections.Generic;
-using System.Text;
 using dotnet.doduo.MessageBroker.Model;
 using RabbitMQ.Client;
 using System.Threading.Tasks;
 using System.Threading;
+using dotnet.doduo.Model.Tier;
 using dotnet.doduo.Model;
 
 namespace dotnet.doduo.MessageBroker.RabbitMq
@@ -14,11 +13,13 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
     {
         private readonly IModel m_model;
         private readonly RabbitMqOptions m_options;
+        private readonly DoduoApplicationIdentifier m_applicationIdentifier;
 
-        public RabbitMqDoduoProducer(IModel model, RabbitMqOptions options)
+        public RabbitMqDoduoProducer(IModel model, RabbitMqOptions options, DoduoApplicationIdentifier applicationIdentifier)
         {
             m_model = model;
             m_options = options;
+            m_applicationIdentifier = applicationIdentifier;
         }
 
         public Task<DoduoResponse> ProduceAsync(string topic, byte[] body)
@@ -75,7 +76,7 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         {
             try
             {
-                topic = $"{topic}.response";
+                topic = $"{topic}.response.{m_applicationIdentifier.ApplicationId}";
                 return await DoduoTierSingleton.Instance.Get(topic, requestId);
             }
             catch (Exception ex)

@@ -11,13 +11,15 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         private readonly Func<IConnection> m_createConnection;
         private IConnection m_connection;
         private readonly RabbitMqOptions m_options;
+        private readonly DoduoApplicationIdentifier m_applicationIdentifier;
 
         private int m_count;
         private int m_maxSize;
 
-        public DoduoRabbitMqConnection(RabbitMqOptions options)
+        public DoduoRabbitMqConnection(RabbitMqOptions options, DoduoApplicationIdentifier applicationIdentifier)
         {
             m_options = options;
+            m_applicationIdentifier = applicationIdentifier;
             m_createConnection = CreateConnection(options);
         }
 
@@ -61,13 +63,13 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
         public IDoduoProducer Rent()
         {       
             var model = GetConnection().CreateModel();
-            return new RabbitMqDoduoProducer(model, m_options);
+            return new RabbitMqDoduoProducer(model, m_options, m_applicationIdentifier);
         }
 
         public IDoduoConsumer Consumer(string topic, DoduoConsumerType doduoConsumerType)
         {
-            return new RabbitMqDoduoConsumer(topic, GetConnection(), m_options, doduoConsumerType);
-        }
+            return new RabbitMqDoduoConsumer(topic, GetConnection(), m_options, doduoConsumerType, m_applicationIdentifier);
+        }  
         
 
         public bool Return(IDoduoProducer context)

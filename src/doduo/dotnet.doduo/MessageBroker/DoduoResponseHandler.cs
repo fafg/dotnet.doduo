@@ -1,6 +1,7 @@
 ﻿using dotnet.doduo.MessageBroker.Contract;
 using dotnet.doduo.MessageBroker.Model;
 using dotnet.doduo.Model;
+using dotnet.doduo.Model.Tier;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,16 +16,18 @@ namespace dotnet.doduo.MessageBroker
         private readonly TimeSpan m_polling = TimeSpan.FromMilliseconds(500);
         private readonly IDoduoSubscribe m_doduoSubscribe;
         private readonly IServiceProvider m_serviceProvider;
+        private readonly DoduoApplicationIdentifier m_applicationIdentifier;
         private Task m_compositeTask;
         private List<string> m_taskTopic = new List<string>();
 
         private readonly Guid ServerTestUid = Guid.NewGuid();
 
-        public DoduoResponseHandler(IDoduoSubscribe doduoSubscribe, IServiceProvider serviceProvider)
+        public DoduoResponseHandler(IDoduoSubscribe doduoSubscribe, IServiceProvider serviceProvider, DoduoApplicationIdentifier applicationIdentifier)
         {
             m_cancellationToken = new CancellationTokenSource();
             m_doduoSubscribe = doduoSubscribe;
             m_serviceProvider = serviceProvider;
+            m_applicationIdentifier = applicationIdentifier;
         }
 
         public void Dispose()
@@ -35,7 +38,7 @@ namespace dotnet.doduo.MessageBroker
 
         public void Start(string topic, DoduoMessageContent content)
         {
-            topic = $"{topic}.response";
+            topic = $"{topic}.response.{m_applicationIdentifier.ApplicationId}";
             DoduoTierSingleton.Instance.SendRequestWait(topic, content);
 
             if (m_taskTopic.Any(p => p.Equals(topic)))

@@ -17,6 +17,7 @@ namespace Microsoft.Extensions.DependencyInjection
             services.Configure(setupAction);
             AddSubscribeServices(services);
 
+            services.AddSingleton<DoduoApplicationIdentifier>();
             services.AddSingleton<DoduoConsumerSelector>();
 
             services.AddSingleton<DoduoConsumerHandler>();
