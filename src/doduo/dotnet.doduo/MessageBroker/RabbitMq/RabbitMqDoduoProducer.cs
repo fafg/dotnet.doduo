@@ -5,6 +5,8 @@ using System.Text;
 using dotnet.doduo.MessageBroker.Model;
 using RabbitMQ.Client;
 using System.Threading.Tasks;
+using System.Threading;
+using dotnet.doduo.Model;
 
 namespace dotnet.doduo.MessageBroker.RabbitMq
 {
@@ -12,13 +14,14 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
     {
         private readonly IModel m_model;
         private readonly RabbitMqOptions m_options;
+
         public RabbitMqDoduoProducer(IModel model, RabbitMqOptions options)
         {
             m_model = model;
             m_options = options;
         }
 
-        public Task<ProducerResponse> ProduceAsync(string topic, byte[] body)
+        public Task<DoduoResponse> ProduceAsync(string topic, byte[] body)
         {
             try
             {
@@ -29,11 +32,55 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
                         null,
                         body);
 
-                return Task.FromResult(ProducerResponse.Ok());
+                return Task.FromResult(DoduoResponse.Ok());
             }
             catch (Exception ex)
             {
-                return Task.FromResult(ProducerResponse.Error(ex));
+                return Task.FromResult(DoduoResponse.Error(ex));
+            }
+        }
+
+        public Task<DoduoResponse> ProduceAsync(string topic, byte[] body, Guid requestId)
+        {
+            try
+            {
+                m_model.ExchangeDeclare(m_options.TopicExchangeName, RabbitMqConstants.EXCHANGE_TYPE, true);
+
+                m_model.BasicPublish(m_options.TopicExchangeName,
+                        topic,
+                        null,
+                        body);
+
+                return WaitResponse(topic, requestId);
+            }
+            catch (Exception ex)
+            {
+                return Task.FromResult(DoduoResponse.Error(ex));
+            }
+        }
+
+        public Task<DoduoResponse> WaitResponse(string topic, Guid requestId)
+        {
+            DateTime dateWaitStart = DateTime.Now;
+            CancellationTokenSource cts = new CancellationTokenSource();
+
+            Task<DoduoResponse> taskProduceResponse = Task.Run(() =>
+                GetResponse(topic, requestId)
+                , cts.Token);
+
+            return taskProduceResponse;
+        }
+
+        public async Task<DoduoResponse> GetResponse(string topic, Guid requestId)
+        {
+            try
+            {
+                topic = $"{topic}.response";
+                return await DoduoTierSingleton.Instance.Get(topic, requestId);
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("List not Exists");
             }
         }
 

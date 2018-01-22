@@ -2,37 +2,42 @@
 
 namespace dotnet.doduo.MessageBroker.Model
 {
-    public class ProducerResponse
+    public class DoduoResponse
     {
         public ProducerResponseType Code { get; internal set; }
-        public Guid RequestId { get; internal set; }        
         public Exception Exception { get; private set; }
         public DoduoResponseContent Body { get; internal set; }
+        public DoduoMessageContent Request { get; internal set; }
 
-        public static ProducerResponse Ok(Guid RequestId)
+        public static DoduoResponse Ok()
         {
-            return new ProducerResponse
+            return new DoduoResponse
             {
-                RequestId = RequestId,
                 Code = ProducerResponseType.Ok
             };
         }
 
-        public static ProducerResponse Ok(Guid RequestId, DoduoResponseContent body)
+        public static DoduoResponse Running()
         {
-            return new ProducerResponse
+            return new DoduoResponse
             {
-                RequestId = RequestId,
+                Code = ProducerResponseType.Running
+            };
+        }
+
+        public static DoduoResponse Ok(DoduoResponseContent body)
+        {
+            return new DoduoResponse
+            {
                 Code = ProducerResponseType.Ok,
                 Body = body
             };
         }
 
-        public static ProducerResponse Error(Guid RequestId, Exception ex)
+        public static DoduoResponse Error(Exception ex)
         {
-            return new ProducerResponse
+            return new DoduoResponse
             {
-                RequestId = RequestId,
                 Code = ProducerResponseType.Faiure,
                 Exception = ex
             };

@@ -17,9 +17,9 @@ namespace dotnet.doduo.MessageBroker.RabbitMq
             m_connection = connection;
         }
 
-        public IDoduoConsumer Build(string topic)
+        public IDoduoConsumer Build(string topic, DoduoConsumerType doduoConsumerType)
         {
-            return m_connection.Consumer(topic);
+            return m_connection.Consumer(topic, doduoConsumerType);
         }
     }
 }

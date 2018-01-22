@@ -6,6 +6,6 @@ namespace dotnet.doduo.MessageBroker.Contract
 {
     public interface IDoduoSubscribe
     {
-        IDoduoConsumer Build(string topic);
+        IDoduoConsumer Build(string topic, DoduoConsumerType doduoConsumerType);
     }
 }

@@ -6,6 +6,7 @@ namespace dotnet.doduo.MessageBroker.Contract
 {
     public interface IDoduoProducer : IDisposable
     {
-        Task<ProducerResponse> ProduceAsync(string topic, byte[] body);
+        Task<DoduoResponse> ProduceAsync(string topic, byte[] body);
+        Task<DoduoResponse> ProduceAsync(string name, byte[] v, Guid requestId);
     }
 }

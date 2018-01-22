@@ -12,6 +12,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Reflection;
 using dotnet.doduo.Helpers;
+using Newtonsoft.Json;
 
 namespace dotnet.doduo.MessageBroker
 {
@@ -22,21 +23,23 @@ namespace dotnet.doduo.MessageBroker
         private readonly IDoduoSubscribe m_doduoSubscribe;
         private readonly DoduoConsumerSelector m_selector;
         private readonly IServiceProvider m_serviceProvider;
+        private readonly IDoduoPublish m_doduoPublish;
         private Task m_compositeTask;
 
         private readonly Guid ServerTestUid = Guid.NewGuid();
 
-        public DoduoConsumerHandler(IDoduoSubscribe doduoSubscribe, DoduoConsumerSelector selector, IServiceProvider serviceProvider)
+        public DoduoConsumerHandler(IDoduoSubscribe doduoSubscribe, DoduoConsumerSelector selector, IServiceProvider serviceProvider, IDoduoPublish doduoPublish)
         {
             m_cancellationToken = new CancellationTokenSource();
             m_doduoSubscribe = doduoSubscribe;
             m_selector = selector;
             m_serviceProvider = serviceProvider;
+            m_doduoPublish = doduoPublish;
         }
 
         public void Dispose()
         {
-            throw new NotImplementedException();
+            m_cancellationToken.Cancel();
         }
 
         public void Start()
@@ -46,7 +49,7 @@ namespace dotnet.doduo.MessageBroker
             foreach (var candidate in candidatesMethods)
                 Task.Factory.StartNew(() =>
                 {
-                    using (var client = m_doduoSubscribe.Build(candidate.Attribute.Topic))
+                    using (var client = m_doduoSubscribe.Build(candidate.Attribute.Topic, DoduoConsumerType.Request))
                     {
                         RegisterMessageProcessor(client, candidate);
 
@@ -63,9 +66,10 @@ namespace dotnet.doduo.MessageBroker
             {
                 try
                 {
-                    Console.WriteLine($"{message.Content}   ---- {candidate.Attribute.Topic} : {candidate.MethodInfo.Name}, {candidate.ImplTypeInfo.Name} : Server :: {ServerTestUid.ToString()}");
+                    Console.WriteLine($"{message.Content} ---- {candidate.Attribute.Topic} : {candidate.MethodInfo.Name}, {candidate.ImplTypeInfo.Name} : Server :: {ServerTestUid.ToString()}");
 
                     InvokeAsync(candidate, message).Wait();
+
                     client.Commit();
                 }
                 catch (Exception e)
@@ -77,7 +81,7 @@ namespace dotnet.doduo.MessageBroker
 
         private async Task InvokeAsync(DoduoConsumerExecutor candidate, DoduoMessage doduoMessage)
         {
-            var executor = ObjectMethodExecutor.Create(
+            ObjectMethodExecutor executor = ObjectMethodExecutor.Create(
                candidate.MethodInfo,
                 candidate.ImplTypeInfo);
 
@@ -89,10 +93,35 @@ namespace dotnet.doduo.MessageBroker
 
                 var jsonContent = doduoMessage.Content;
 
-                object resultObj;
+                object resultObj = null;
                 if (executor.MethodParameters.Length > 0)
                     resultObj = await ExecuteWithParameterAsync(executor, obj, jsonContent);
+
+                Type returnType = GetReturnType(executor);
+                if (returnType != typeof(void))
+                {
+                    SendResponse(resultObj, returnType, doduoMessage);
+                }
             }
+        }
+
+        private void SendResponse(object resultObj, Type returnType, DoduoMessage doduoMessage)
+        {
+            DoduoResponseContent responseContent = new DoduoResponseContent(doduoMessage.Content.RequestId);
+
+            responseContent.Type = returnType.ToString();
+            responseContent.Body = JsonConvert.SerializeObject(resultObj);
+
+            m_doduoPublish.PublishResponseAsync(responseContent, doduoMessage.Name);
+        }
+
+        private Type GetReturnType(ObjectMethodExecutor executor)
+        {
+            Type resultType = executor.MethodReturnType;
+            if (executor.IsMethodAsync)
+                resultType = executor.AsyncResultType;
+
+            return resultType ;
         }
 
         private async Task<object> ExecuteWithParameterAsync(ObjectMethodExecutor executor, object controller, DoduoMessageContent content)
@@ -100,7 +129,6 @@ namespace dotnet.doduo.MessageBroker
             try
             {
                 IEnumerable<object> messageParameters = ParameterBuilderHelper.BuildParameters(executor.MethodParameters, content);
-                int ssss = messageParameters.Count();
                 if (executor.IsMethodAsync)
                     return await executor.ExecuteAsync(controller, messageParameters.ToArray());
                 return executor.Execute(controller, messageParameters.ToArray());

@@ -14,6 +14,7 @@ namespace dotnet.doduo.MessageBroker.Contract
         Task Commit();
 
         event EventHandler<DoduoMessage> OnMessageReceived;
+        event EventHandler<DoduoResponseContent> OnResponseMessageReceived;
 
         void Reject();
     }
